@@ -28,13 +28,13 @@ jobs:
           npm run build
       
       - name: Upload Bundles
-        uses: cross-the-world/scp-pipeline@master
+        uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.DC_HOST }}
-          user: ${{ secrets.DC_USER }}
-          pass: ${{ secrets.DC_PASS }}
-          local: "./dist/*"
-          remote: /home/cj/citest/
+          username: ${{ secrets.DC_USER }}
+          password: ${{ secrets.DC_PASS }}
+          source: "./dist/*"
+          target: /home/cj/citest/
       
       - name: Run a one-line script
         run: echo CI_DONE
