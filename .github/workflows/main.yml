@@ -1,0 +1,38 @@
+name: AutoDeploy
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    types:
+      - closed
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
+      
+      - name: Upload Bundles
+        uses: cross-the-world/scp-pipeline@master
+        with:
+          host: ${{ secrets.DC_HOST }}
+          user: ${{ secrets.DC_USER }}
+          pass: ${{ secrets.DC_PASS }}
+          local: "./dist/*"
+          remote: /home/cj/citest/
+      
+      - name: Run a one-line script
+        run: echo CI_DONE
